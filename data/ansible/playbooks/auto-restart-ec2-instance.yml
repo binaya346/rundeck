@@ -1,0 +1,16 @@
+---
+- hosts: testing_server
+  connection: local
+  tasks:
+    - name: Stop EC2 instance
+      amazon.aws.ec2_instance:
+        region: ap-south-1
+        instance_ids: ["{{instance_id}}"]
+        state: stopped
+
+    - name: Start EC2 instance
+      amazon.aws.ec2_instance:
+        region: ap-south-1
+        instance_ids: ["{{instance_id}}"]
+        state: running
+

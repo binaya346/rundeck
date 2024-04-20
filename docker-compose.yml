@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  rundeck:
+    build:
+      context: .
+      dockerfile: ./rundeck.Dockerfile
+    image: rundeck/rundeck
+    links:
+      - postgres
+    environment:
+      RUNDECK_DATABASE_DRIVER: org.postgresql.Driver
+      # RUNDECK_SERVER_FORWARDED: "true"
+      # RUNDECK_SECURITY_HTTPHEADERS_PROVIDER_CSP_ENABLED: "false"
+      RUNDECK_DATABASE_USERNAME: rundeck
+      RUNDECK_DATABASE_PASSWORD: rundeck
+      RUNDECK_DATABASE_URL: jdbc:postgresql://postgres/rundeck?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+      RUNDECK_GRAILS_URL: http://127.0.0.1:4440/
+      RUNDECK_SERVER_ADDRESS: 0.0.0.0
+    volumes:
+      - rundeck_data:/home/rundeck/server
+      - /Users/binayadai/Documents/project/minor/rundeck/data:/opt
+      - /Users/binayadai/.ssh:/home/rundeck/.ssh
+    ports:
+      - 4440:4440
+    restart: always
+  postgres:
+    image: postgres:14.5-alpine
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_DB=rundeck
+      - POSTGRES_USER=rundeck
+      - POSTGRES_PASSWORD=rundeck
+    volumes:
+      - rundeck_dbdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  rundeck_data:
+  rundeck_dbdata:

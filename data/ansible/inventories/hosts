@@ -1,0 +1,2 @@
+[deployment_config]
+testing_server ansible_host=3.6.38.121
